@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="6dce6d0f-1db6-451b-bf0c-b92c73948860" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../../member/memberService/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../member/memberService/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../member/memberService/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../member/memberService/src/main/java/com/member.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../product/productService/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../product/productService/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../product/productService/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../product/productService/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../product/productService/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 6
+}]]></component>
+  <component name="ProjectId" id="36H6wUko1KFpNTh4Slu1ez749Yu" />
+  <component name="ProjectViewState">
+    <option name="autoscrollToSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6dce6d0f-1db6-451b-bf0c-b92c73948860" name="Changes" comment="" />
+      <created>1764651387909</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1764651387909</updated>
+    </task>
+    <servers />
+  </component>
+</project>
