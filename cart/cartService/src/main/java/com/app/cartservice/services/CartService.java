@@ -2,11 +2,14 @@ package com.app.cartservice.services;
 
 import com.app.cartservice.dto.AddToCartRequest;
 import com.app.cartservice.dto.CartResponse;
+import jakarta.validation.Valid;
 
 public interface CartService {
-    void addToCart(String customerId, AddToCartRequest request);
+    CartResponse addToCart(String customerId, @Valid AddToCartRequest request);
+
+    CartResponse updateQuantity(String customerId, String productId, int quantity);
 
     CartResponse viewCart(String customerId);
 
-    void removeFromCart(String customerId, String productId);
+    CartResponse removeItem(String customerId, String productId);
 }

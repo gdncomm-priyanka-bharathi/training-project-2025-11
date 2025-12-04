@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class ProductUpdatedEvent {
     private String productId;
     private String name;
+    private String description;
     private String category;
-    private Double price;
-//    private boolean active;
+    private double price;
 }

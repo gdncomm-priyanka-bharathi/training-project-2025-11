@@ -29,6 +29,33 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+
+    @ExceptionHandler(EmptyCartException.class)
+    public ResponseEntity<?> handleEmptyCartException(Exception ex,HttpServletRequest request) {
+        ApiErrorResponse error = buildError(HttpStatus.OK, ex.getMessage(), request);
+        return new ResponseEntity<>(error, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(UserNotLoggedInException.class)
+    public ResponseEntity<?> handleUserNotLoggedInException(Exception ex,HttpServletRequest request) {
+        ApiErrorResponse error = buildError(HttpStatus.UNAUTHORIZED, ex.getMessage(), request);
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(CartDoesNotExistsException.class)
+    public ResponseEntity<?> handleCartDoesNotExistsException(Exception ex,HttpServletRequest request) {
+        ApiErrorResponse error = buildError(HttpStatus.NOT_FOUND, ex.getMessage(), request);
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ItemNotFoundException.class)
+    public ResponseEntity<?> handleItemNotFoundException(Exception ex,HttpServletRequest request) {
+        ApiErrorResponse error = buildError(HttpStatus.NOT_FOUND, ex.getMessage(), request);
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+
 }
 
 

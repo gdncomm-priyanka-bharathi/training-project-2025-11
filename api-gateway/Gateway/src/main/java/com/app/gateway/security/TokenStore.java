@@ -1,4 +1,4 @@
 package com.app.gateway.security;
 
-public class SecurityConfig {
+public class TokenStore {
 }

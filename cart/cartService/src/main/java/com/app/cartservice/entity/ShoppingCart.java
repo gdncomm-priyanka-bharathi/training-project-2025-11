@@ -16,9 +16,11 @@ import java.util.List;
 public class ShoppingCart {
 
     @Id
+    private String id;
+
     private String customerId;
+
     private List<CartItem> items = new ArrayList<>();
 
-    public ShoppingCart(String customerId) {
-    }
+    private Double totalPrice;
 }

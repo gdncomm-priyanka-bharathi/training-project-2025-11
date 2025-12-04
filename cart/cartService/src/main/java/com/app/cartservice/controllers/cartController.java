@@ -3,9 +3,8 @@ package com.app.cartservice.controllers;
 import com.app.cartservice.dto.AddToCartRequest;
 import com.app.cartservice.dto.CartResponse;
 import com.app.cartservice.services.CartService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,38 +17,44 @@ public class cartController {
         this.cartService = cartService;
     }
 
-    @PostMapping("/addToCart")
-    public ResponseEntity<String> addToCart(
-            @AuthenticationPrincipal Jwt jwt,
-            @RequestBody AddToCartRequest request) {
-
-        String customerId = jwt.getSubject();
-
-        cartService.addToCart(customerId, request);
-
-        return ResponseEntity.ok("Product added to cart");
+    private String getCustomerIdFromHeader(String userIdHeader) {
+        if (userIdHeader == null || userIdHeader.isEmpty()) {
+            throw new RuntimeException("UNAUTHENTICATED");
+        }
+        return userIdHeader;
     }
 
+
+    @PostMapping("/addToCart")
+    public ResponseEntity<CartResponse> addToCart(
+            @RequestHeader("X-User-Id") String userId,
+            @Valid @RequestBody AddToCartRequest request) {
+        String customerId = getCustomerIdFromHeader(userId);
+        return ResponseEntity.ok(cartService.addToCart(customerId, request));
+    }
+
+    @PutMapping("/items/{productId}")
+    public ResponseEntity<CartResponse> updateQuantity(
+            @RequestHeader("X-User-Id") String userId,
+            @PathVariable String productId,
+            @RequestParam int quantity) {
+        String customerId = getCustomerIdFromHeader(userId);
+        return ResponseEntity.ok(cartService.updateQuantity(customerId, productId, quantity));
+    }
 
 
     @GetMapping("/viewCart")
     public ResponseEntity<CartResponse> viewCart(
-            @AuthenticationPrincipal Jwt jwt) {
-
-        String customerId = jwt.getSubject();
-
+            @RequestHeader("X-User-Id") String userId) {
+        String customerId = getCustomerIdFromHeader(userId);
         return ResponseEntity.ok(cartService.viewCart(customerId));
     }
 
     @DeleteMapping("/delete/{productId}")
-    public ResponseEntity<String> removeFromCart(
-            @AuthenticationPrincipal Jwt jwt,
+    public ResponseEntity<CartResponse> removeItem(
+            @RequestHeader("X-User-Id") String userId,
             @PathVariable String productId) {
-
-        String customerId = jwt.getSubject();
-
-        cartService.removeFromCart(customerId, productId);
-
-        return ResponseEntity.ok("Product removed successfully");
+        String customerId = getCustomerIdFromHeader(userId);
+        return ResponseEntity.ok(cartService.removeItem(customerId, productId));
     }
 }
