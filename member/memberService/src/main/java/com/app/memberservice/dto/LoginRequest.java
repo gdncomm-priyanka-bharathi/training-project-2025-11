@@ -1,4 +1,12 @@
 package com.app.memberservice.dto;
 
-public record LoginRequest(String email, String password) {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+
+@Data
+@AllArgsConstructor
+public class LoginRequest {
+    private String email;
+    private String password;
 }

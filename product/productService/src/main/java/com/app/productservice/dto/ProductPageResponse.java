@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class ProductListResponse {
+public class ProductPageResponse {
 
     private List<ProductResponse> items;
     private int page;

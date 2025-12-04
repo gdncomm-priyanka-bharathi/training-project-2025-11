@@ -1,4 +1,4 @@
-package com.app.memberservice.config;
+package com.app.productservice.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
@@ -12,9 +12,9 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Member Service")
+                        .title("Product Service")
                         .version("1.0")
-                        .description("API documentation for Member Service")
+                        .description("API documentation for Product Service")
                         .contact(new Contact()
                                 .name("")
                                 .email("")));

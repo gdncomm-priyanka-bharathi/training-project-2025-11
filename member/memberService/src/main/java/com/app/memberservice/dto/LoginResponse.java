@@ -7,9 +7,8 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 @Builder
-public class JwtResponse {
+public class LoginResponse {
     private String token;
-    private String tokenType = "Bearer";
     private UserResponse member;
 
     }

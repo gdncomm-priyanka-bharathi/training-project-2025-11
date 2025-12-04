@@ -1,7 +1,8 @@
 package com.app.productservice.controllers;
 
+import com.app.productservice.dto.ProductPageResponse;
+import com.app.productservice.dto.ProductRequest;
 import com.app.productservice.dto.ProductResponse;
-import com.app.productservice.dto.ProductUpdateRequest;
 import com.app.productservice.services.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/products")
 public class ProductController {
 
     private final ProductService productService;
@@ -19,37 +20,46 @@ public class ProductController {
         this.productService = service;
     }
 
+
+    @PostMapping("/addProduct")
+    public ResponseEntity<ProductResponse> addProduct(
+            @RequestBody ProductRequest request) {
+        ProductResponse productResponse = productService.createProduct(request);
+        return ResponseEntity.ok(productResponse);
+    }
+
+    @PutMapping("/updateProduct/{id}")
+    public ResponseEntity<ProductResponse> updateProductByID(
+            @PathVariable String id,
+            @RequestBody ProductRequest request){
+        ProductResponse productResponse = productService.updateProduct(id, request);
+        return ResponseEntity.ok(productResponse);
+    }
+
     @GetMapping("/productDetail/{id}")
-    public ResponseEntity<ProductResponse> getProductById(@PathVariable String id) {
-        return ResponseEntity.ok(productService.getProductById(id));
+    public ResponseEntity<ProductResponse> getProductDetailById(@PathVariable String id) {
+        return ResponseEntity.ok(productService.getProductDetail(id));
     }
 
 
     @GetMapping("/search")
-    public ResponseEntity<List<ProductResponse>> search(
+    public ResponseEntity<ProductPageResponse> search(
             @RequestParam String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        List<ProductResponse> ProductResponse = productService.searchProducts(keyword, page, size);
+
+        ProductPageResponse ProductResponse = productService.searchProducts(keyword, page, size);
         return new ResponseEntity<>(ProductResponse, HttpStatus.OK);
     }
 
-    @PutMapping("/productDetail/update{id}")
-    public ResponseEntity<ProductResponse> updateProductByID(
-            @PathVariable String id,
-            @RequestBody ProductUpdateRequest request){
-        ProductResponse productResponse = productService.updateProductDetail(id, request);
-        return ResponseEntity.ok(productResponse);
+    @GetMapping("/listAll")
+    public ResponseEntity<List<ProductResponse>> listAll() {
+        return ResponseEntity.ok(productService.listAll());
     }
 
-    @PostMapping("/addProduct")
-    public ResponseEntity<ProductResponse> addProduct(
-            @RequestBody ProductUpdateRequest request) {
 
-        ProductResponse productResponse = productService.addProduct(request);
 
-        return ResponseEntity.ok(productResponse);
-    }
+
 
 
 

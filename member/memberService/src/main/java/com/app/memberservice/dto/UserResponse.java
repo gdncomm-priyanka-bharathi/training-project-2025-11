@@ -1,15 +1,18 @@
 package com.app.memberservice.dto;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 @Data
 @AllArgsConstructor
-public class MemberResponse(){
+@NoArgsConstructor
+@ToString
+@Builder
+public class UserResponse{
 
     private Long id;
     private String email;
-    private String fullName;
+    private String userName;
+    private String phoneNumber;
 
-}
+    }

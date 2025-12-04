@@ -16,4 +16,6 @@ public interface ProductRepository extends MongoRepository<Product, String> {
             "] }")
     Page<Product> searchProducts(String keyword, Pageable pageable);
 
+    Page<Product> findAll(Pageable pageable);
+
 }

@@ -1,4 +1,4 @@
-package com.postgres.StudentLearningManagementSystem_Postgres.exception;
+package com.app.memberservice.exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
