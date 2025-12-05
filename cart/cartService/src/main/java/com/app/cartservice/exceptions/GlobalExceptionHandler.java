@@ -1,5 +1,6 @@
 package com.app.cartservice.exceptions;
 
+import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,6 +55,58 @@ public class GlobalExceptionHandler {
         ApiErrorResponse error = buildError(HttpStatus.NOT_FOUND, ex.getMessage(), request);
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<?> handleUserNotFoundException(Exception ex,HttpServletRequest request) {
+        ApiErrorResponse error = buildError(HttpStatus.NOT_FOUND, ex.getMessage(), request);
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(FeignException.NotFound.class)
+    public ResponseEntity<ApiErrorResponse> handleFeignNotFound(FeignException.NotFound ex, HttpServletRequest request) {
+
+        ApiErrorResponse error = buildError(
+                HttpStatus.NOT_FOUND,
+                "RESOURCE_NOT_FOUND_IN_REMOTE_SERVICE",
+                request
+        );
+
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(RemoteServiceException.class)
+    public ResponseEntity<?> handleRemoteServiceException(RemoteServiceException ex, HttpServletRequest request) {
+
+        ApiErrorResponse error = buildError(
+                HttpStatus.BAD_GATEWAY,
+                ex.getMessage(),
+                request
+        );
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_GATEWAY);
+    }
+
+
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<ApiErrorResponse> handleFeignGeneral(FeignException ex, HttpServletRequest request) {
+
+        // If Feign returned specific HTTP status
+        HttpStatus status = HttpStatus.resolve(ex.status());
+        if (status == null) status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        ApiErrorResponse error = buildError(
+                status,
+                "REMOTE_SERVICE_ERROR: " + ex.getMessage(),
+                request
+        );
+
+        return new ResponseEntity<>(error, status);
+    }
+
+
+
+
+
 
 
 }

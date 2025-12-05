@@ -12,4 +12,7 @@ public interface CartService {
     CartResponse viewCart(String customerId);
 
     CartResponse removeItem(String customerId, String productId);
+
+    void deleteCartForUser(String customerId);
+
 }

@@ -33,19 +33,19 @@ public class cartController {
         return ResponseEntity.ok(cartService.addToCart(customerId, request));
     }
 
-    @PutMapping("/items/{productId}")
-    public ResponseEntity<CartResponse> updateQuantity(
-            @RequestHeader("X-User-Id") String userId,
-            @PathVariable String productId,
-            @RequestParam int quantity) {
-        String customerId = getCustomerIdFromHeader(userId);
-        return ResponseEntity.ok(cartService.updateQuantity(customerId, productId, quantity));
-    }
+//    @PutMapping("/items/{productId}")
+//    public ResponseEntity<CartResponse> updateQuantity(
+//            @RequestHeader("X-User-Id") String userId,
+//            @PathVariable String productId,
+//            @RequestParam int quantity) {
+//        String customerId = getCustomerIdFromHeader(userId);
+//        return ResponseEntity.ok(cartService.updateQuantity(customerId, productId, quantity));
+//    }
 
 
     @GetMapping("/viewCart")
     public ResponseEntity<CartResponse> viewCart(
-            @RequestHeader("X-User-Id") String userId) {
+            @RequestHeader(value = "X-User-Id", required = false) String userId) {
         String customerId = getCustomerIdFromHeader(userId);
         return ResponseEntity.ok(cartService.viewCart(customerId));
     }
@@ -57,4 +57,12 @@ public class cartController {
         String customerId = getCustomerIdFromHeader(userId);
         return ResponseEntity.ok(cartService.removeItem(customerId, productId));
     }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<?> deleteCart(@PathVariable String userId) {
+        cartService.deleteCartForUser(userId);
+        return ResponseEntity.ok("Cart deleted for user: " + userId);
+    }
+
+
 }

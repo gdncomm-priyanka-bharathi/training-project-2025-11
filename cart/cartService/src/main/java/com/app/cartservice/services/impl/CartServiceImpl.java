@@ -1,6 +1,7 @@
 package com.app.cartservice.services.impl;
 
 import com.app.cartservice.client.ProductRestClient;
+import com.app.cartservice.client.UserClient;
 import com.app.cartservice.dto.AddToCartRequest;
 import com.app.cartservice.dto.CartItemResponse;
 import com.app.cartservice.dto.CartResponse;
@@ -8,11 +9,13 @@ import com.app.cartservice.dto.ProductResponse;
 import com.app.cartservice.entity.CartItem;
 import com.app.cartservice.entity.ShoppingCart;
 import com.app.cartservice.events.ProductUpdatedEvent;
-import com.app.cartservice.exceptions.EmptyCartException;
-import com.app.cartservice.exceptions.ItemNotFoundException;
+import com.app.cartservice.exceptions.*;
 import com.app.cartservice.repositories.CartRepository;
 import com.app.cartservice.services.CartService;
+import feign.FeignException;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,14 +27,25 @@ public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
     private final ProductRestClient productRestClient;
+    private final UserClient userClient;
+    private final StringRedisTemplate redis;
 
-    public CartServiceImpl(CartRepository cartRepository, ProductRestClient productRestClient) {
+
+    public CartServiceImpl(CartRepository cartRepository, ProductRestClient productRestClient, UserClient userClient, StringRedisTemplate redis) {
         this.cartRepository = cartRepository;
         this.productRestClient = productRestClient;
+        this.userClient = userClient;
+        this.redis = redis;
     }
 
     @Override
     public CartResponse addToCart(String customerId, AddToCartRequest request) {
+        String sessionKey = "LOGIN:" + customerId;
+        Boolean isLoggedIn = redis.hasKey(sessionKey);
+
+        if (Boolean.FALSE.equals(isLoggedIn)) {
+            throw new UserNotLoggedInException("USER_SESSION_EXPIRED_OR_LOGGED_OUT");
+        }
 
         ShoppingCart cart = cartRepository.findByCustomerId(customerId)
                 .orElseGet(() -> {
@@ -52,14 +66,15 @@ public class CartServiceImpl implements CartService {
         if (existing.isPresent()) {
             CartItem item = existing.get();
             item.setQuantity(item.getQuantity() + request.getQuantity());
-
             item.setPrice(product.getPrice());
+            item.setCategory(product.getCategory());
             item.setName(product.getName());
 
         } else {
             CartItem item = new CartItem();
             item.setProductId(request.getProductId());
             item.setQuantity(request.getQuantity());
+            item.setCategory(product.getCategory());
             item.setPrice(product.getPrice());
             item.setName(product.getName());
             cart.getItems().add(item);
@@ -100,7 +115,24 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartResponse viewCart(String customerId) {
-        //Check if cart exists
+
+        if (customerId == null || customerId.isBlank()) {
+            throw new UserNotLoggedInException("USER_IS_NOT_LOGGED_IN");
+        }
+
+        //Validate user existence from Member Service
+        try {
+            userClient.getUser(customerId);
+
+        } catch (FeignException.NotFound e) {
+            throw new UserNotFoundException("USER_DOES_NOT_EXIST");
+
+        } catch (FeignException e) {
+            //any other feign issue = remote service failed
+            throw new RemoteServiceException("MEMBER_SERVICE_ERROR: " + e.getMessage());
+        }
+
+        //Check cart existence
         ShoppingCart cart = cartRepository.findByCustomerId(customerId)
                 .orElseThrow(() -> new EmptyCartException("CART_DOES_NOT_EXISTS"));
 
@@ -111,6 +143,7 @@ public class CartServiceImpl implements CartService {
 
         return mapToResponse(cart);
     }
+
 
 
     public void applyProductUpdate(ProductUpdatedEvent event) {
@@ -148,6 +181,10 @@ public class CartServiceImpl implements CartService {
         cart.setTotalPrice(total);
     }
 
+    @KafkaListener(topics = "user-deleted")
+    public void deleteCartForUser(String userId) {
+        cartRepository.deleteByCustomerId(userId);
+    }
 
 
     private CartResponse mapToResponse(ShoppingCart cart) {
