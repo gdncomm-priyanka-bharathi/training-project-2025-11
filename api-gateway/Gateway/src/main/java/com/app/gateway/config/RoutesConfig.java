@@ -20,7 +20,7 @@ public class RoutesConfig {
     @Bean
     public RouteLocator customRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("member-service", r -> r.path("/members/**")
+                .route("member-service", r -> r.path("/user/**")
                         .uri(memberServiceUrl))
                 .route("product-service", r -> r.path("/products/**")
                         .uri(productServiceUrl))

@@ -5,13 +5,15 @@ import com.app.memberservice.dto.LoginResponse;
 import com.app.memberservice.dto.RegisterRequest;
 import com.app.memberservice.dto.UserResponse;
 import com.app.memberservice.services.UserService;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth/user")
+@RequestMapping("/user")
 @Tag(name = "User", description = "APIs for user login register")
 public class UserController {
     private final UserService userService;
@@ -31,10 +33,22 @@ public class UserController {
     }
 
     @DeleteMapping("/logout")
-    public ResponseEntity<?> logout(@RequestHeader("X-User-Id") String userId) {
+    public ResponseEntity<?> logout(
+            @Parameter(
+            name = "X-User-Id",
+            required = true,
+            in = ParameterIn.HEADER)
+            @RequestHeader("X-User-Id") String userId) {
         // Actual token blacklisting is done in gateway filter.
         userService.logout(userId);
         return ResponseEntity.ok("Logout successful");
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponse> getUser(@PathVariable String id) {
+        UserResponse response = userService.getUserById(id);
+        return ResponseEntity.ok(response);
+    }
+
 
 }

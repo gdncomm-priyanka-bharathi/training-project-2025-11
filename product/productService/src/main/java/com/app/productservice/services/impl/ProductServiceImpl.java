@@ -90,17 +90,13 @@ public class ProductServiceImpl implements ProductService {
 
         // Prepare paginated response
         ProductPageResponse response = new ProductPageResponse();
+        response.setItems(content);
         response.setTotalElements(productPage.getTotalElements());
         response.setTotalPages(productPage.getTotalPages());
         response.setPage(page);
         response.setSize(size);
 
         return response;
-    }
-
-    public List<ProductResponse> listAll() {
-        return productRepository.findAll().stream()
-                .map(this::convertToDTO).collect(Collectors.toList());
     }
 
     private ProductResponse convertToDTO(Product product) {

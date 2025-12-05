@@ -48,9 +48,14 @@ public class GlobalExceptionHandler {
     }
 
 
-
     @ExceptionHandler(UserAlreadyLoggedOutException.class)
     public ResponseEntity<ApiErrorResponse>handleUserAlreadyLoggedOutException(Exception ex,HttpServletRequest request){
+        ApiErrorResponse error = buildError(HttpStatus.NOT_FOUND, ex.getMessage(), request);
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse>handleUserNotFoundException(Exception ex,HttpServletRequest request){
         ApiErrorResponse error = buildError(HttpStatus.NOT_FOUND, ex.getMessage(), request);
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }

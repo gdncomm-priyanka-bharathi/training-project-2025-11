@@ -8,8 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/products")
 public class ProductController {
@@ -50,11 +48,6 @@ public class ProductController {
 
         ProductPageResponse ProductResponse = productService.searchProducts(keyword, page, size);
         return new ResponseEntity<>(ProductResponse, HttpStatus.OK);
-    }
-
-    @GetMapping("/listAll")
-    public ResponseEntity<List<ProductResponse>> listAll() {
-        return ResponseEntity.ok(productService.listAll());
     }
 
 

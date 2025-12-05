@@ -41,7 +41,7 @@ public class MemberDataLoader implements CommandLineRunner {
         List<User> members = new ArrayList<>(5000);
         Random random = new Random();
 
-        for (int i = 4001; i <= 5000; i++) {
+        for (int i = 1; i <= 5000; i++) {
             User m = new User();
             m.setUserName("User_" + i);
             m.setEmail("user" + i + "@gmail.com");

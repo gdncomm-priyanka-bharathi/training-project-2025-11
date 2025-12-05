@@ -1,14 +1,12 @@
 package com.app.memberservice.services.impl;
 
+import com.app.memberservice.client.CartClient;
 import com.app.memberservice.dto.LoginRequest;
 import com.app.memberservice.dto.LoginResponse;
 import com.app.memberservice.dto.RegisterRequest;
 import com.app.memberservice.dto.UserResponse;
 import com.app.memberservice.entity.User;
-import com.app.memberservice.exceptions.InvalidUserOrPassword;
-import com.app.memberservice.exceptions.UserAlreadyExists;
-import com.app.memberservice.exceptions.UserAlreadyLoggedInException;
-import com.app.memberservice.exceptions.UserAlreadyLoggedOutException;
+import com.app.memberservice.exceptions.*;
 import com.app.memberservice.repositories.UserRepository;
 import com.app.memberservice.security.JwtService;
 import com.app.memberservice.services.UserService;
@@ -28,15 +26,16 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final StringRedisTemplate redis;
-
+    private final CartClient cartClient;
 
     public UserServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder,
-                           JwtService jwtService, StringRedisTemplate redis) {
+                           JwtService jwtService, StringRedisTemplate redis, CartClient cartClient, CartClient cartClient1) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.redis = redis;
+        this.cartClient = cartClient1;
     }
 
     public UserResponse register(RegisterRequest request) {
@@ -103,11 +102,28 @@ public class UserServiceImpl implements UserService {
         String key = "LOGIN:" + userId;
 
         if (redis.opsForValue().get(key) == null) {
-            throw new UserAlreadyLoggedOutException("USER_ALREADY_LOGGED_OUT");
+            throw new UserAlreadyLoggedOutException("User already logged out or never logged in");
         }
 
         redis.delete(key);
     }
+
+    @Override
+    public UserResponse getUserById(String id) {
+        User user = userRepository.findById(Long.valueOf(id))
+                .orElseThrow(() -> new UserNotFoundException("USER_DOES_NOT_EXIST"));
+
+        UserResponse response = new UserResponse();
+        BeanUtils.copyProperties(user, response);
+        return response;
+    }
+
+
+    public void deleteUser(String userId) {
+        userRepository.deleteById(Long.valueOf(userId));
+        cartClient.deleteCart(userId);
+    }
+
 
 
 

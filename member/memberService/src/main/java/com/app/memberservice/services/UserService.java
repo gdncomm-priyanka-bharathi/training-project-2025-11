@@ -10,4 +10,6 @@ public interface UserService {
     LoginResponse login(LoginRequest request);
 
     void logout(String userId);
+
+    UserResponse getUserById(String id);
 }
